@@ -2,7 +2,6 @@
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using System.Xml;
 using IVRRecording.Web.Controllers;
 using Moq;
 using NUnit.Framework;
@@ -29,25 +28,17 @@ namespace IVRRecording.Web.Test.Controllers
         }
 
         [Test]
-        public void ShowWelcome_responds_with_Play_within_Gather()
+        public void GivenAWelcomeAction_ThenTheResponseContainsGatherPlay()
         {
             var controller = new IVRController();
-            var result = controller.ShowWelcome();
+            var result = controller.Welcome();
 
             result.ExecuteResult(_mockControllerContext.Object);
 
-            var document = LoadXml(_result.ToString());
+            var document = TestHelper.LoadXml(_result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Gather/Play"), Is.Not.Null);
             Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value, Is.Empty);
-        }
-
-        private static XmlDocument LoadXml(string xml)
-        {
-            var document = new XmlDocument();
-            document.LoadXml(xml);
-
-            return document;
         }
     }
 }

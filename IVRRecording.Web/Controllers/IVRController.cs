@@ -1,13 +1,11 @@
-﻿using System.Web.Mvc;
-using Twilio.TwiML;
+﻿using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
 namespace IVRRecording.Web.Controllers
 {
     public class IVRController : TwilioController
     {
-        [ActionName("Welcome")]
-        public TwiMLResult ShowWelcome()
+        public TwiMLResult Welcome()
         {
             var response = new TwilioResponse();
             response.BeginGather(new {action = "", numDigits = 1})
