@@ -145,6 +145,7 @@
     <Compile Include="Models\IVRRecordingContext.cs" />
     <Compile Include="Models\Recording.cs" />
     <Compile Include="Models\Repository\AgentRepository.cs" />
+    <Compile Include="Models\Repository\RecordingRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
