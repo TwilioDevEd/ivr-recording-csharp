@@ -17,7 +17,8 @@ namespace IVRRecording.Web.Test.Controllers
 
             var document = LoadXml(Result.ToString());
 
-            Assert.That(document.SelectSingleNode("Response/Record").Attributes["action"].Value, Is.Empty);
+            Assert.That(document.SelectSingleNode("Response/Record").Attributes["action"].Value,
+                Is.EqualTo("/Agent/Hangup"));
             Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
         }
 
@@ -42,7 +43,8 @@ namespace IVRRecording.Web.Test.Controllers
 
             var document = LoadXml(Result.ToString());
 
-            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value, Is.Empty);
+            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value,
+                Is.EqualTo("/Agent/ConnectMessage"));
             Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
         }
 
@@ -68,6 +70,20 @@ namespace IVRRecording.Web.Test.Controllers
             var document = LoadXml(Result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Say"), Is.Not.Null);
+        }
+
+        [Test]
+        public void GivenAHangupAction_ThenRespondsWithMessageAndHangup()
+        {
+            var controller = new AgentController();
+            var result = controller.Hangup();
+
+            result.ExecuteResult(MockControllerContext.Object);
+
+            var document = LoadXml(Result.ToString());
+
+            Assert.That(document.SelectSingleNode("Response/Say"), Is.Not.Null);
+            Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
         }
     }
 }

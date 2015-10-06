@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.EnterpriseServices;
+using System.Web.Mvc;
+using IVRRecording.Web.Models.Repository;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
@@ -19,7 +21,7 @@ namespace IVRRecording.Web.Controllers
             response.Record(new
             {
                 maxLength = "20",
-                action = "",
+                action = "/Agent/Hangup",
                 transcribeCallback = ""
             });
 
@@ -38,7 +40,7 @@ namespace IVRRecording.Web.Controllers
             var incomingCallMessage = "You have an incoming call from: " +
                                       SpelledPhoneNumber(from) +
                                       " Press any key to accept";
-            response.BeginGather(new {numDigits = 1, action = ""})
+            response.BeginGather(new {numDigits = 1, action = "/Agent/ConnectMessage"})
                 .Say("You have an incoming call from: ")
                 .Say(incomingCallMessage)
                 .Say("Sorry. Did not get your response")
@@ -53,6 +55,17 @@ namespace IVRRecording.Web.Controllers
         {
             return new TwiMLResult(new TwilioResponse()
                 .Say("Connecting you to the extraterrestrial in distress"));
+        }
+
+        // GET: Agent/Hangup
+        public TwiMLResult Hangup()
+        {
+            var response = new TwilioResponse();
+            response.Say("Thanks for your message. Goodbye",
+                new {voice = "alice", language = "en-GB"});
+            response.Hangup();
+
+            return new TwiMLResult(response);
         }
 
         private static string SpelledPhoneNumber(string phoneNumber)
