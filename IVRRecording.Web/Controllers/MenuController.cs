@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
@@ -7,7 +8,8 @@ namespace IVRRecording.Web.Controllers
 {
     public class MenuController : TwilioController
     {
-        // GET: Menu
+        // POST: Menu/Show
+        [HttpPost]
         public TwiMLResult Show(string digits)
         {
             var selectedOption = digits;

@@ -18,7 +18,8 @@ namespace IVRRecording.Web.Test.Controllers
             var document = LoadXml(Result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Gather/Play"), Is.Not.Null);
-            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value, Is.Empty);
+            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value,
+                Is.EqualTo("/Menu/Show"));
         }
     }
 }

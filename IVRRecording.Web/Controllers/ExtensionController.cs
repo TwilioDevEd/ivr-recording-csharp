@@ -22,6 +22,11 @@ namespace IVRRecording.Web.Controllers
         {
             var extension = digits;
             var agent = FindAgentByExtension(extension);
+            if (agent == null)
+            {
+                return RedirectToMenu();
+            }
+
             var response = new TwilioResponse();
 
             response.Say("You'll be connected shortly to your planet.",
@@ -45,6 +50,13 @@ namespace IVRRecording.Web.Controllers
             string agentExtension;
             planetExtensions.TryGetValue(extension, out agentExtension);
             return _repository.FindByExtension(agentExtension);
+        }
+        private static TwiMLResult RedirectToMenu()
+        {
+            var response = new TwilioResponse();
+            response.Redirect("/Menu/Show");
+
+            return new TwiMLResult(response);
         }
     }
 }

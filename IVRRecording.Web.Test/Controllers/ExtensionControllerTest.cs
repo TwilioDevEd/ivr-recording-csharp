@@ -31,5 +31,21 @@ namespace IVRRecording.Web.Test.Controllers
             Assert.That(document.SelectSingleNode("Response/Dial/Number").InnerText,
                 Is.EqualTo("+12025550142"));
         }
+
+        [Test]
+        public void GivenAConnectAction_WhenAnAgentIsNotFound_ThenRespondsRedirectingToMainMenu()
+        {
+            var mockRepository = new Mock<IAgentRepository>();
+            mockRepository.Setup(r => r.FindByExtension(It.IsAny<string>()));
+            var controller = new ExtensionController(mockRepository.Object);
+            var result = controller.Connect("*");
+
+            result.ExecuteResult(MockControllerContext.Object);
+
+            var document = LoadXml(Result.ToString());
+
+            Assert.That(document.SelectSingleNode("Response/Redirect").InnerText,
+                Is.EqualTo("/Menu/Show"));
+        }
     }
 }
