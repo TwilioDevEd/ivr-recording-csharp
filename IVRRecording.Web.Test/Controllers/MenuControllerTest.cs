@@ -32,9 +32,9 @@ namespace IVRRecording.Web.Test.Controllers
             var document = LoadXml(Result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Gather/Say"), Is.Not.Null);
-            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value, Is.Empty);
+            Assert.That(document.SelectSingleNode("Response/Gather").Attributes["action"].Value,
+                Is.EqualTo("/Extension/Connect"));
         }
-
 
         [Test]
         public void GivenAShowAction_WhenTheSelectedOptionIsDifferentThan1Or2_ThenTheResponseRedirectsToIVRWelcome()

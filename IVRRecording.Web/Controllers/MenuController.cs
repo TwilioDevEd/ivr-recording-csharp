@@ -42,7 +42,7 @@ namespace IVRRecording.Web.Controllers
         private static TwiMLResult Planets()
         {
             var response = new TwilioResponse();
-            response.BeginGather(new {action = "", numDigits = "1"})
+            response.BeginGather(new {action = "/Extension/Connect", numDigits = "1"})
                 .Say("To call the planet Broh doe As O G, press 2. To call the planet " +
                      "DuhGo bah, press 3. To call an oober asteroid to your location, press 4. To " +
                      "go back to the main menu, press the star key ",

@@ -1,4 +1,6 @@
-﻿using IVRRecording.Web.Models.Repository;
+﻿using System.Collections.Generic;
+using IVRRecording.Web.Models;
+using IVRRecording.Web.Models.Repository;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
@@ -19,16 +21,30 @@ namespace IVRRecording.Web.Controllers
         public TwiMLResult Connect(string digits)
         {
             var extension = digits;
-            var agent = _repository.FindByExtension(extension);
+            var agent = FindAgentByExtension(extension);
             var response = new TwilioResponse();
 
             response.Say("You'll be connected shortly to your planet.",
                 new { voice = "alice", language = "en-GB" });
 
-            var number = new Number(agent.PhoneNumber, new { url = "screen/call" });
-            response.Dial(number, new { action = "" });
+            var number = new Number(agent.PhoneNumber, new { url = "/Agent/ScreenCall" });
+            response.Dial(number, new {action = string.Format("/Agent/Call?agentId={0}", agent.Id)});
 
             return new TwiMLResult(response);
+        }
+
+        private Agent FindAgentByExtension(string extension)
+        {
+            var planetExtensions = new Dictionary<string, string>
+            {
+                {"2", "Brodo"},
+                {"3", "Dagobah"},
+                {"4", "Oober"}
+            };
+
+            string agentExtension;
+            planetExtensions.TryGetValue(extension, out agentExtension);
+            return _repository.FindByExtension(agentExtension);
         }
     }
 }

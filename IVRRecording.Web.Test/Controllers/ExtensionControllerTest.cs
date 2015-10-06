@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using IVRRecording.Web.Controllers;
+﻿using IVRRecording.Web.Controllers;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
 using Moq;
@@ -19,18 +15,21 @@ namespace IVRRecording.Web.Test.Controllers
         {
             var mockRepository = new Mock<IAgentRepository>();
             mockRepository.Setup(r => r.FindByExtension(It.IsAny<string>()))
-                .Returns(new Agent {PhoneNumber = "+12025550142"});
+                .Returns(new Agent {Id = 1, PhoneNumber = "+12025550142"});
             var controller = new ExtensionController(mockRepository.Object);
-            var result = controller.Connect("agent-extension");
+            var result = controller.Connect("2");
 
             result.ExecuteResult(MockControllerContext.Object);
 
             var document = LoadXml(Result.ToString());
 
-            Assert.That(document.SelectSingleNode("Response/Dial/Number"), Is.Not.Null);
+            Assert.That(document.SelectSingleNode("Response/Dial").Attributes["action"].Value,
+                Is.EqualTo("/Agent/Call?agentId=1"));
+
+            Assert.That(document.SelectSingleNode("Response/Dial/Number").Attributes["url"].Value,
+                Is.EqualTo("/Agent/ScreenCall"));
             Assert.That(document.SelectSingleNode("Response/Dial/Number").InnerText,
                 Is.EqualTo("+12025550142"));
-
         }
     }
 }
