@@ -12,23 +12,8 @@ using NUnit.Framework;
 
 namespace IVRRecording.Web.Test.Controllers
 {
-    public class ExtensionControllerTest
+    public class ExtensionControllerTest : ControllerTest
     {
-        private StringBuilder _result;
-        private Mock<ControllerContext> _mockControllerContext;
-
-        [SetUp]
-        public void Setup()
-        {
-            _result = new StringBuilder();
-            var mockResponse = new Mock<HttpResponseBase>();
-            mockResponse.Setup(s => s.Write(It.IsAny<string>())).Callback<string>(c => _result.Append(c));
-            mockResponse.Setup(s => s.Output).Returns(new StringWriter(_result));
-
-            _mockControllerContext = new Mock<ControllerContext>();
-            _mockControllerContext.Setup(x => x.HttpContext.Response).Returns(mockResponse.Object);
-        }
-
         [Test]
         public void GivenAConnectAction_WhenAnAgentIsFound_ThenRespondsByDialingTheAgentsPhoneNumber()
         {
@@ -38,9 +23,9 @@ namespace IVRRecording.Web.Test.Controllers
             var controller = new ExtensionController(mockRepository.Object);
             var result = controller.Connect("agent-extension");
 
-            result.ExecuteResult(_mockControllerContext.Object);
+            result.ExecuteResult(MockControllerContext.Object);
 
-            var document = TestHelper.LoadXml(_result.ToString());
+            var document = LoadXml(Result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Dial/Number"), Is.Not.Null);
             Assert.That(document.SelectSingleNode("Response/Dial/Number").InnerText,

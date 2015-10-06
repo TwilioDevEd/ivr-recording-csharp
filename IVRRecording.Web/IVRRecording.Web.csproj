@@ -129,6 +129,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\ExtensionController.cs" />
     <Compile Include="Controllers\IVRController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Agent\" />
     <Folder Include="Views\Menu\" />
   </ItemGroup>
   <ItemGroup>
