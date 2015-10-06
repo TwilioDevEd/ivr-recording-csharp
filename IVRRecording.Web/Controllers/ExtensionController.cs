@@ -54,7 +54,7 @@ namespace IVRRecording.Web.Controllers
         private static TwiMLResult RedirectToMenu()
         {
             var response = new TwilioResponse();
-            response.Redirect("/Menu/Show");
+            response.Redirect("/IVR/Welcome");
 
             return new TwiMLResult(response);
         }

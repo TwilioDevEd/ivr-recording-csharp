@@ -11,7 +11,7 @@ namespace IVRRecording.Web.Test.Controllers
         public void GivenACallAction_WhenStatusIsDifferentThanCompleted_ThenRecordTheCallAndHangup()
         {
             var controller = new AgentController();
-            var result = controller.Call("busy");
+            var result = controller.Call("1", "busy");
 
             result.ExecuteResult(MockControllerContext.Object);
 
@@ -20,7 +20,7 @@ namespace IVRRecording.Web.Test.Controllers
             Assert.That(document.SelectSingleNode("Response/Record").Attributes["action"].Value,
                 Is.EqualTo("/Agent/Hangup"));
             Assert.That(document.SelectSingleNode("Response/Record").Attributes["transcribeCallback"].Value,
-                Is.EqualTo("/Recording/Create"));
+                Is.EqualTo("/Recording/Create?agentId=1"));
             Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
         }
 
@@ -28,7 +28,7 @@ namespace IVRRecording.Web.Test.Controllers
         public void GivenACallAction_WhenStatusIsCompleted_ThenResponseWillBeEmpty()
         {
             var controller = new AgentController();
-            var result = controller.Call("completed");
+            var result = controller.Call("1", "completed");
 
             result.ExecuteResult(MockControllerContext.Object);
 

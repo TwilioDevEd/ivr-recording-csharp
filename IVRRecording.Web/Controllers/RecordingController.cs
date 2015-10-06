@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
 
@@ -22,13 +23,13 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Recording/Create
         [HttpPost]
-        public ActionResult Create(int agentId, string caller, string transcriptionText, string recordingUrl)
+        public ActionResult Create(string agentId, string caller, string transcriptionText, string recordingUrl)
         {
 
             _repository.Create(
                 new Recording
                 {
-                    AgentId = agentId,
+                    AgentId = Convert.ToInt32(agentId),
                     PhoneNumber = caller,
                     Transcription = transcriptionText,
                     Url = recordingUrl

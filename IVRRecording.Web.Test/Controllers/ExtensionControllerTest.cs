@@ -45,7 +45,7 @@ namespace IVRRecording.Web.Test.Controllers
             var document = LoadXml(Result.ToString());
 
             Assert.That(document.SelectSingleNode("Response/Redirect").InnerText,
-                Is.EqualTo("/Menu/Show"));
+                Is.EqualTo("/IVR/Welcome"));
         }
     }
 }

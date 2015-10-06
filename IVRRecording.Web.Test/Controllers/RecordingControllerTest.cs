@@ -16,7 +16,7 @@ namespace IVRRecording.Web.Test.Controllers
             var mockRepository = new Mock<IRecordingRepository>();
             mockRepository.Setup(r => r.Create(It.IsAny<Recording>()));
             var controller = new RecordingController(mockRepository.Object);
-            var result = controller.Create(1, "caller", "transcription", "url");
+            var result = controller.Create("1", "caller", "transcription", "url");
 
             result.ExecuteResult(MockControllerContext.Object);
 
