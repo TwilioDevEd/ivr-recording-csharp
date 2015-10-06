@@ -95,6 +95,7 @@
     <Compile Include="Controllers\ExtensionControllerTest.cs" />
     <Compile Include="Controllers\IVRControllerTest.cs" />
     <Compile Include="Controllers\MenuControllerTest.cs" />
+    <Compile Include="Controllers\RecordingControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

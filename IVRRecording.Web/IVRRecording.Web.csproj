@@ -133,12 +133,17 @@
     <Compile Include="Controllers\ExtensionController.cs" />
     <Compile Include="Controllers\IVRController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
+    <Compile Include="Controllers\RecordingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201510061335592_CreateDatabase.cs" />
     <Compile Include="Migrations\201510061335592_CreateDatabase.Designer.cs">
       <DependentUpon>201510061335592_CreateDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510061848414_AddExplicitForeignKeyOnRecording.cs" />
+    <Compile Include="Migrations\201510061848414_AddExplicitForeignKeyOnRecording.Designer.cs">
+      <DependentUpon>201510061848414_AddExplicitForeignKeyOnRecording.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Agent.cs" />
@@ -181,6 +186,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Agent\" />
     <Folder Include="Views\Menu\" />
+    <Folder Include="Views\Recording\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -191,6 +197,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201510061335592_CreateDatabase.resx">
       <DependentUpon>201510061335592_CreateDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510061848414_AddExplicitForeignKeyOnRecording.resx">
+      <DependentUpon>201510061848414_AddExplicitForeignKeyOnRecording.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

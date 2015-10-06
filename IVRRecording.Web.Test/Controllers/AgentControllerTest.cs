@@ -19,6 +19,8 @@ namespace IVRRecording.Web.Test.Controllers
 
             Assert.That(document.SelectSingleNode("Response/Record").Attributes["action"].Value,
                 Is.EqualTo("/Agent/Hangup"));
+            Assert.That(document.SelectSingleNode("Response/Record").Attributes["transcribeCallback"].Value,
+                Is.EqualTo("/Recording/Create"));
             Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
         }
 

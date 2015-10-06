@@ -1,6 +1,4 @@
-﻿using System.EnterpriseServices;
-using System.Web.Mvc;
-using IVRRecording.Web.Models.Repository;
+﻿using System.Web.Mvc;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
@@ -22,7 +20,7 @@ namespace IVRRecording.Web.Controllers
             {
                 maxLength = "20",
                 action = "/Agent/Hangup",
-                transcribeCallback = ""
+                transcribeCallback = "/Recording/Create"
             });
 
             response.Say("No record received. Goodbye",
