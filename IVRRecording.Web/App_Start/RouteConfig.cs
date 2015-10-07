@@ -12,7 +12,7 @@ namespace IVRRecording.Web
             routes.MapRoute(
                 "Default",
                 "{controller}/{action}/{id}",
-                new { controller = "IVR", action = "Welcome", id = UrlParameter.Optional }
+                new { controller = "Agent", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

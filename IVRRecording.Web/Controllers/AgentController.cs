@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using IVRRecording.Web.Models.Repository;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
 
@@ -7,6 +8,22 @@ namespace IVRRecording.Web.Controllers
 {
     public class AgentController : TwilioController
     {
+        private readonly IAgentRepository _repository;
+
+        public AgentController() : this(new AgentRepository()) {}
+
+        public AgentController(IAgentRepository repository)
+        {
+            _repository = repository;
+        }
+
+        // GET: Recording
+        public ActionResult Index()
+        {
+            var agents = _repository.All();
+            return View(agents);
+        }
+
         // GET: Agent/Call
         public ActionResult Call(string agentId, string dialCallStatus)
         {

@@ -4,20 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IVR Recording</title>
-    @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/css")
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <div class="container body-content">
+    <nav class="navbar navbar-default">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">IVR Screening</a>
+        </div>
+    </nav>
+    <div class="container">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year</p>
-        </footer>
     </div>
+    <footer class="container">
+        Made with <i class="fa fa-heart"></i> by your pals
+        <a href="http://www.twilio.com">@@twilio</a>
+    </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @RenderSection("scripts", false)
 </body>
 </html>

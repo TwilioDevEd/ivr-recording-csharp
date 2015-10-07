@@ -1,0 +1,37 @@
+﻿@model IEnumerable<IVRRecording.Web.Models.Agent>
+
+<h2>Agents and Recordings</h2>
+@foreach (var agent in Model)
+{
+    <h2>@agent.Extension</h2>
+    if (@agent.Recordings.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Caller number</th>
+                    <th>Transcription</th>
+                    <th>Recording</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var recording in agent.Recordings)
+                {
+                    <tr>
+                        <td>@recording.PhoneNumber</td>
+                        <td>@recording.Transcription</td>
+                        <td>
+                            <audio controls src="@(string.Format("{0}.mp3", recording.Url))">
+                                This browser doesn't support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No recordings</p>
+    }
+}

@@ -1,4 +1,13 @@
-﻿using IVRRecording.Web.Controllers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+using IVRRecording.Web.Controllers;
+using IVRRecording.Web.Models;
+using IVRRecording.Web.Models.Repository;
+using Moq;
 using NUnit.Framework;
 
 // ReSharper disable PossibleNullReferenceException
@@ -7,6 +16,25 @@ namespace IVRRecording.Web.Test.Controllers
 {
     public class AgentControllerTest : ControllerTest
     {
+        [Test]
+        public void GivenAnIndexAction_ThenReturnsAllAgents()
+        {
+            var brodo = new Agent {Extension = "Brodo"};
+            var dagobah = new Agent {Extension = "Dagobah"};
+            var agents = new List<Agent> {brodo, dagobah};
+
+            var mockRepository = new Mock<IAgentRepository>();
+            mockRepository.Setup(r => r.All()).Returns(agents);
+
+            var controller = GetAgentController(mockRepository.Object);
+
+            var result = controller.Index() as ViewResult;
+            var model = (IList<Agent>) result.ViewData.Model;
+
+            Assert.That(model.Count(), Is.EqualTo(2));
+            CollectionAssert.Contains(model, dagobah);
+        }
+
         [Test]
         public void GivenACallAction_WhenStatusIsDifferentThanCompleted_ThenRecordTheCallAndHangup()
         {
@@ -86,6 +114,37 @@ namespace IVRRecording.Web.Test.Controllers
 
             Assert.That(document.SelectSingleNode("Response/Say"), Is.Not.Null);
             Assert.That(document.SelectSingleNode("Response/Hangup"), Is.Not.Null);
+        }
+
+        private static AgentController GetAgentController(IAgentRepository repository)
+        {
+            var controller = new AgentController(repository);
+
+            controller.ControllerContext = new ControllerContext()
+            {
+                Controller = controller,
+                RequestContext = new RequestContext(new MockHttpContext(), new RouteData())
+            };
+            return controller;
+        }
+
+
+        private class MockHttpContext : HttpContextBase
+        {
+            private readonly IPrincipal _user = new GenericPrincipal(
+                new GenericIdentity("someUser"), null /* roles */);
+
+            public override IPrincipal User
+            {
+                get
+                {
+                    return _user;
+                }
+                set
+                {
+                    base.User = value;
+                }
+            }
         }
     }
 }

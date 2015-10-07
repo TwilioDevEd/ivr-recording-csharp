@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace IVRRecording.Web.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class AddExplicitForeignKeyOnRecording : DbMigration
     {
         public override void Up()

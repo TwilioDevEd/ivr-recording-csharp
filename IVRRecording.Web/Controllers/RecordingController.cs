@@ -15,11 +15,6 @@ namespace IVRRecording.Web.Controllers
         {
             _repository = repository;
         }
-        // GET: Recording
-        public ActionResult Index()
-        {
-            return null;
-        }
 
         // POST: Recording/Create
         [HttpPost]
