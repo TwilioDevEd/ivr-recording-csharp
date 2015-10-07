@@ -10,7 +10,7 @@ namespace IVRRecording.Web.Test.Controllers
         [Test]
         public void GivenACallAction_WhenStatusIsDifferentThanCompleted_ThenRecordTheCallAndHangup()
         {
-            var controller = new AgentController();
+            var controller = new AgentController {Url = Url};
             var result = controller.Call("1", "busy");
 
             result.ExecuteResult(MockControllerContext.Object);
@@ -38,7 +38,7 @@ namespace IVRRecording.Web.Test.Controllers
         [Test]
         public void GivenAScreenCallAction_ThenResponseContainsGatherAndHangup()
         {
-            var controller = new AgentController();
+            var controller = new AgentController{Url = Url};
             var result = controller.ScreenCall("1234567890");
 
             result.ExecuteResult(MockControllerContext.Object);
@@ -53,7 +53,7 @@ namespace IVRRecording.Web.Test.Controllers
         [Test]
         public void GivenAScreenCallAction_ThenResponseContainsSpelledPhoneNumber()
         {
-            var controller = new AgentController();
+            var controller = new AgentController {Url = Url};
             var result = controller.ScreenCall("1234567890");
 
             result.ExecuteResult(MockControllerContext.Object);

@@ -16,7 +16,7 @@ namespace IVRRecording.Web.Test.Controllers
             var mockRepository = new Mock<IAgentRepository>();
             mockRepository.Setup(r => r.FindByExtension(It.IsAny<string>()))
                 .Returns(new Agent {Id = 1, PhoneNumber = "+12025550142"});
-            var controller = new ExtensionController(mockRepository.Object);
+            var controller = new ExtensionController(mockRepository.Object) {Url = Url};
             var result = controller.Connect("2");
 
             result.ExecuteResult(MockControllerContext.Object);
@@ -37,7 +37,7 @@ namespace IVRRecording.Web.Test.Controllers
         {
             var mockRepository = new Mock<IAgentRepository>();
             mockRepository.Setup(r => r.FindByExtension(It.IsAny<string>()));
-            var controller = new ExtensionController(mockRepository.Object);
+            var controller = new ExtensionController(mockRepository.Object) {Url = Url};
             var result = controller.Connect("*");
 
             result.ExecuteResult(MockControllerContext.Object);

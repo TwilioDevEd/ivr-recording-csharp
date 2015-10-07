@@ -20,8 +20,8 @@ namespace IVRRecording.Web.Controllers
             response.Record(new
             {
                 maxLength = "20",
-                action = "/Agent/Hangup",
-                transcribeCallback = string.Format("/Recording/Create?agentId={0}", agentId)
+                action = Url.Action("Hangup"),
+                transcribeCallback = Url.Action("Create", "Recording", new {agentId})
             });
 
             response.Say("No record received. Goodbye",
@@ -38,11 +38,12 @@ namespace IVRRecording.Web.Controllers
             var response = new TwilioResponse();
             var incomingCallMessage = "You have an incoming call from: " +
                                       SpelledPhoneNumber(from);
-            response.BeginGather(new {numDigits = 1, action = "/Agent/ConnectMessage"})
+            response.BeginGather(new {numDigits = 1, action = Url.Action("ConnectMessage")})
                 .Say(incomingCallMessage)
                 .Say("Press any key to accept")
-                .Say("Sorry. Did not get your response")
                 .EndGather();
+
+            response.Say("Sorry. Did not get your response");
             response.Hangup();
 
             return new TwiMLResult(response);

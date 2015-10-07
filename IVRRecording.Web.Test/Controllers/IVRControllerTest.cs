@@ -10,7 +10,7 @@ namespace IVRRecording.Web.Test.Controllers
         [Test]
         public void GivenAWelcomeAction_ThenTheResponseContainsGatherPlay()
         {
-            var controller = new IVRController();
+            var controller = new IVRController {Url = Url};
             var result = controller.Welcome();
 
             result.ExecuteResult(MockControllerContext.Object);

@@ -32,8 +32,8 @@ namespace IVRRecording.Web.Controllers
             response.Say("You'll be connected shortly to your planet.",
                 new { voice = "alice", language = "en-GB" });
 
-            var number = new Number(agent.PhoneNumber, new { url = "/Agent/ScreenCall" });
-            response.Dial(number, new {action = string.Format("/Agent/Call?agentId={0}", agent.Id)});
+            var number = new Number(agent.PhoneNumber, new { url = Url.Action("ScreenCall", "Agent")});
+            response.Dial(number, new {action = Url.Action("Call", "Agent", new {agentId = agent.Id})});
 
             return new TwiMLResult(response);
         }
@@ -51,10 +51,10 @@ namespace IVRRecording.Web.Controllers
             planetExtensions.TryGetValue(extension, out agentExtension);
             return _repository.FindByExtension(agentExtension);
         }
-        private static TwiMLResult RedirectToMenu()
+        private TwiMLResult RedirectToMenu()
         {
             var response = new TwilioResponse();
-            response.Redirect("/IVR/Welcome");
+            response.Redirect(Url.Action("Welcome", "IVR"));
 
             return new TwiMLResult(response);
         }

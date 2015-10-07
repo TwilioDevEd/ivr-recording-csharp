@@ -11,7 +11,7 @@ namespace IVRRecording.Web.Controllers
         public TwiMLResult Welcome()
         {
             var response = new TwilioResponse();
-            response.BeginGather(new {action = "/Menu/Show", numDigits = 1})
+            response.BeginGather(new {action = Url.Action("Show", "Menu"), numDigits = 1})
                 .Play("http://howtodocs.s3.amazonaws.com/et-phone.mp3", new { loop = 3 })
                 .EndGather();
 

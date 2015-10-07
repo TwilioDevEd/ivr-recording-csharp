@@ -54,10 +54,10 @@ namespace IVRRecording.Web.Controllers
             return new TwiMLResult(response);
         }
 
-        private static TwiMLResult RedirectWelcome()
+        private TwiMLResult RedirectWelcome()
         {
             var response = new TwilioResponse();
-            response.Redirect("/ivr/welcome");
+            response.Redirect(Url.Action("Welcome", "IVR"));
 
             return new TwiMLResult(response);
         }

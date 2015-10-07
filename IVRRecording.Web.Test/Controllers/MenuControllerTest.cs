@@ -37,16 +37,16 @@ namespace IVRRecording.Web.Test.Controllers
         }
 
         [Test]
-        public void GivenAShowAction_WhenTheSelectedOptionIsDifferentThan1Or2_ThenTheResponseRedirectsToIVRWelcome()
+        public void GivenAShowAction_WhenTheSelectedOptionIsDifferentThan_1_Or_2_ThenTheResponseRedirectsToIVRWelcome()
         {
-            var controller = new MenuController();
+            var controller = new MenuController {Url = Url};
             var result = controller.Show("*");
 
             result.ExecuteResult(MockControllerContext.Object);
 
             var document = LoadXml(Result.ToString());
 
-            Assert.That(document.SelectSingleNode("Response/Redirect").InnerText, Is.EqualTo("/ivr/welcome"));
+            Assert.That(document.SelectSingleNode("Response/Redirect").InnerText, Is.EqualTo("/IVR/Welcome"));
         }
     }
 }
