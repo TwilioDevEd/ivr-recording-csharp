@@ -24,7 +24,8 @@ namespace IVRRecording.Web.Controllers
             return View(agents);
         }
 
-        // GET: Agent/Call
+        // POST: Agent/Call
+        [HttpPost]
         public ActionResult Call(string agentId, string dialCallStatus)
         {
             if (dialCallStatus == "completed") return Content(String.Empty);
@@ -49,7 +50,8 @@ namespace IVRRecording.Web.Controllers
             return new TwiMLResult(response);
         }
 
-        // GET: Agent/ScreenCall
+        // POST: Agent/ScreenCall
+        [HttpPost]
         public TwiMLResult ScreenCall(string from)
         {
             var response = new TwilioResponse();
@@ -73,7 +75,8 @@ namespace IVRRecording.Web.Controllers
                 .Say("Connecting you to the extraterrestrial in distress"));
         }
 
-        // GET: Agent/Hangup
+        // POST: Agent/Hangup
+        [HttpPost]
         public TwiMLResult Hangup()
         {
             var response = new TwilioResponse();

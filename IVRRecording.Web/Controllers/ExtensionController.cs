@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
 using Twilio.TwiML;
@@ -17,7 +18,8 @@ namespace IVRRecording.Web.Controllers
             _repository = repository;
         }
 
-        // GET: Extension/Connect
+        // POST: Extension/Connect
+        [HttpPost]
         public TwiMLResult Connect(string digits)
         {
             var extension = digits;
