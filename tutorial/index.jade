@@ -1,5 +1,5 @@
 .chapter(data-title='IVR Phone Tree')
-  .step(data-file='IVRRecording.Web/packages.config')
+  .step(data-file='IVRRecording.Web/packages.config', data-mode='xml')
     :markdown
       ## About this application
 
@@ -8,14 +8,14 @@
 
       This [ASP.NET MVC](//www.asp.net/mvc) sample application is
       modeled after a typical call center experience, but with more [Reese's
-      Pieces](https://en.wikipedia.org/wiki/Reese%27s_Pieces#ET:_The_Extra-
+      Pieces](//en.wikipedia.org/wiki/Reese%27s_Pieces#ET:_The_Extra-
       Terrestrial).
 
-      Stranded aliens can call a phone number and receive instructions on how
-      to get out of earth safely, or call their home planet
-      directly[.](//bit.ly/asogi) In this tutorial, we'll show you the
-      key bits of code that allow an agent to send a caller to voicemail, and
-      later read transcripts and listen to voicemails.
+      Stranded aliens can call a phone number and receive instructions on how to
+      get out of earth safely, or call their [home planet](//bit.ly/asogi)
+      directly. In this tutorial, we'll show you the key bits of code that allow
+      an agent to send a caller to voicemail, and later read transcripts and
+      listen to voicemails.
 
       To run this sample app yourself, [download the code and follow the
       instructions on GitHub](//github.com/TwilioDevEd/ivr-recording-csharp).
@@ -27,6 +27,184 @@
 
       **See Also:**
       * [Getting Started with ASP.NET MVC
-      5](http://www.asp.net/mvc/overview/getting-started/introduction/getting-started)
+      5](//www.asp.net/mvc/overview/getting-started/introduction/getting-started)
       * [The Twilio C# Helper
-      Library](https://www.twilio.com/docs/csharp/install)
+      Library](//www.twilio.com/docs/csharp/install)
+
+  .step(data-file='IVRRecording.Web/Controllers/ExtensionController.cs',
+  data-highlight='21-41')
+    :markdown
+      ## Route the call to an agent
+
+      When our caller chooses a planet we need to figure out where to route the
+      call. Depending on her input we will route this call to an extension. In
+      this case an extension will be used to look up an Agent, so any string
+      can be used to define an extension. 
+
+      Once we lookup the `Agent`, we can `<Dial>` the agent's phone number and try
+      to connect the call. Let's dive in a little bit more into how we lookup
+      the Agent.
+
+      ---
+
+      **See Also:**
+      * [Using the Twilio.TwiML Helper
+      Library](//www.twilio.com/blog/2012/02/twilio-for-net-developers-part-4-using-the-twilio-twiml-helper-library.html)
+      * [Twilio.TwiML](//github.com/twilio/twilio-csharp/wiki/Twilio.TwiML)
+      * [TwiML Dial](//www.twilio.com/docs/api/twiml/dial)
+
+  .step(data-file='IVRRecording.Web/Controllers/ExtensionController.cs',
+  data-highlight='43-55')
+    :markdown
+      ## Looking up an Agent
+
+      In this case the Agent model is very simple. The migration used to create it:
+
+      ```
+      public class Agent
+      {
+        public int Id { get; set; }
+        public string Extension { get; set; }
+        public string PhoneNumber { get; set; }
+
+        public virtual IList<Recording> Recordings { get; set; }
+      }
+      ```
+
+      We have a handle or `Extension` that we can use to lookup and Agent, and
+      we have a `PhoneNumber` that we will call.
+
+      _Bear in mind that `FindByExtension` is just a wrapper for `FirstOrDefault`._
+
+      ---
+
+      **See Also:**
+      * [FirstOrDefault Method](//msdn.microsoft.com/en-us/library/vstudio/bb918914.aspx)
+
+  .step(data-file='IVRRecording.Web/Controllers/ExtensionController.cs', data-highlight='32-40')
+    :markdown
+      ## An agent screens the call
+
+      By passing a `url` to the `Dial` > [`Number`](//www.twilio.com/docs/api/twiml/number)
+      TwiML tag, we are telling Twilio to make a POST request to the
+      `Agent/Call` route **after** the agent has picked up but **before**
+      connecting the two parties.
+
+      Essentially we are telling Twilio to execute some TwiML that only the
+      agent will hear. In this case the TwiML instructs the agent to press any
+      number to accept the call. This is processed through the
+      [Gather](//www.twilio.com/docs/api/twiml/gather) callback.
+
+      ---
+
+      **See Also:**
+      * [TwiML Say verb](//www.twilio.com/docs/api/twiml/say)
+
+  .step(data-file='IVRRecording.Web/Controllers/AgentController.cs',
+  data-highlight='53-69')
+    :markdown
+      ## Connect the Caller to the Agent
+
+      If the agent responds to the call screen by entering any digit the
+      response will be processed by our `Agent/ConnectMessage` route which
+      will `<Say>` a quick message, then continue with the original `<Dial>`
+      command and connect the two parties.
+
+      If the agent instead does not respond, the processing of the
+      `<Dial>` verb will end and Twilio will continue processing the
+      TwiML document.
+
+      ---
+
+      **See Also:**
+      * [The Gather action attribute](//www.twilio.com/docs/api/twiml/gather#attributes-action)
+
+  .step(data-file='IVRRecording.Web/Controllers/AgentController.cs',
+  data-highlight='27-51')
+    :markdown
+      ## Send the Caller to Voicemail
+
+      When Twilio makes a request to our voicemail controller, it will pass a
+      [`DialCallStatus`](//www.twilio.com/docs/api/twiml/dial#attributes-action-dial-call-status-values)
+      which will tell us if the call was successful. If it was "completed" we
+      hangup — otherwise we need to `<Say>` a quick prompt and then
+      [`<Record>`](//www.twilio.com/docs/api/twiml/record) a voicemail from
+      the caller. 
+
+      We also specify an `action` for `<Record>`. This route will be
+      called after the call (and hence the recording) has finished. The route
+      will response "Goodbye" and then `<Hangup>`.
+
+      ---
+
+      **See Also:**
+      * [Twilio Request
+        parameters](//www.twilio.com/docs/api/twiml/twilio_request#synchronous-request-parameters)
+      * [The TwiML Hangup verb](//www.twilio.com/docs/api/twiml/hangup)
+
+  .step(data-file='IVRRecording.Web/Controllers/RecordingController.cs',
+  data-highlight='19-34')
+    :markdown
+      ## Record the Caller
+
+      When we tell Twilio to Record we have a few
+      [options](//www.twilio.com/docs/api/twiml/record#attributes) we can
+      pass to the `Record` verb. 
+
+      Here we instruct Record to stop the recording at 20 seconds, to
+      [`transcribe`](//www.twilio.com/docs/api/twiml/record#attributes-transcribe)
+      the call, and where to send the transcription when it's
+      complete. Adding the `transcribeCallback` attribute to
+      `<Record>` implies `transcribe = true`.
+
+      Notice we redirect to an URL that is specific to an agent. This
+      is a convenient way to specify which agent was called to produce
+      this voice message. This way we can also save the associated
+      agent together with the voicemail.
+
+      ---
+
+      **See Also:**
+      * [Twilio transcribeCallback](//www.twilio.com/docs/api/twiml/record#attributes-transcribe-callback)
+
+  .step(data-file='IVRRecording.Web/Controllers/AgentController.cs',
+  data-highlight='20-25')
+    :markdown
+      ## View an Agent's Voicemails
+
+      Once we look up the Agent, all we need to do is display all of her
+      recordings. We simply bind the agents with its recordings to a view that
+      is then rendered.
+
+      It is possible to look up recordings via the Twilio REST API,
+      but since we have all of the data we need is in the
+      `transcribeCallback` request we can easily store it ourselves
+      and save a roundtrip.
+
+      ---
+
+      **See Also:**
+      * [Twilio REST API: Recordings](//www.twilio.com/docs/api/rest/recording)
+      * [Twilio REST API: Transcription Resource](//www.twilio.com/docs/api/rest/transcription)
+
+  .step
+    :markdown
+      ## Where to next?
+
+      That's it! We've just implemented an IVR with real Agents, call
+      screening and voicemail. If you're a C# developer working with
+      Twilio, you might want to check out these other tutorials.
+
+      [**Appointment
+      Reminders**](//www.twilio.com/docs/howto/walkthrough/appointment-reminders/csharp/mvc)
+
+      Send your customers a text message when they have an upcoming
+      appointment - this tutorial shows you how to do it from a
+      background job.
+
+      ### Did this help?
+
+      Thanks for checking out this tutorial! If you have any feedback
+      to share with us, we'd love to hear it. Tweet
+      [@twilio](//twitter.com/twilio) to let us know what you
+      think.
