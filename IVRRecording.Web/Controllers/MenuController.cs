@@ -24,7 +24,7 @@ namespace IVRRecording.Web.Controllers
                 RedirectWelcome();
         }
 
-        private static TwiMLResult ReturnInstructions()
+        private TwiMLResult ReturnInstructions()
         {
             var response = new TwilioResponse();
             response.Say("To get to your extraction point, get on your bike and go down " +
@@ -38,10 +38,10 @@ namespace IVRRecording.Web.Controllers
 
             response.Hangup();
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
-        private static TwiMLResult Planets()
+        private TwiMLResult Planets()
         {
             var response = new TwilioResponse();
             response.BeginGather(new {action = "/Extension/Connect", numDigits = "1"})
@@ -51,7 +51,7 @@ namespace IVRRecording.Web.Controllers
                      new {voice = "alice", language = "en-GB", loop = "3"})
                 .EndGather();
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
         private TwiMLResult RedirectWelcome()
@@ -59,7 +59,7 @@ namespace IVRRecording.Web.Controllers
             var response = new TwilioResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
     }
 }

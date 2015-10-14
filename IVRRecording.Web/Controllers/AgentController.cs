@@ -47,7 +47,7 @@ namespace IVRRecording.Web.Controllers
 
             response.Hangup();
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
         // POST: Agent/ScreenCall
@@ -65,13 +65,13 @@ namespace IVRRecording.Web.Controllers
             response.Say("Sorry. Did not get your response");
             response.Hangup();
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
         // GET: Agent/ConnectMessage
         public TwiMLResult ConnectMessage()
         {
-            return new TwiMLResult(new TwilioResponse()
+            return TwiML(new TwilioResponse()
                 .Say("Connecting you to the extraterrestrial in distress"));
         }
 
@@ -84,7 +84,7 @@ namespace IVRRecording.Web.Controllers
                 new {voice = "alice", language = "en-GB"});
             response.Hangup();
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
         private static string SpelledPhoneNumber(string phoneNumber)

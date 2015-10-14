@@ -37,7 +37,7 @@ namespace IVRRecording.Web.Controllers
             var number = new Number(agent.PhoneNumber, new { url = Url.Action("ScreenCall", "Agent")});
             response.Dial(number, new {action = Url.Action("Call", "Agent", new {agentId = agent.Id})});
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
 
         private Agent FindAgentByExtension(string extension)
@@ -59,7 +59,7 @@ namespace IVRRecording.Web.Controllers
             var response = new TwilioResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return new TwiMLResult(response);
+            return TwiML(response);
         }
     }
 }
