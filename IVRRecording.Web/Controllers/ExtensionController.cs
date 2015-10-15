@@ -20,7 +20,7 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Extension/Connect
         [HttpPost]
-        public TwiMLResult Connect(string digits)
+        public ActionResult Connect(string digits)
         {
             var extension = digits;
             var agent = FindAgentByExtension(extension);

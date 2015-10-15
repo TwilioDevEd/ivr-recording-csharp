@@ -10,7 +10,7 @@ namespace IVRRecording.Web.Controllers
     {
         // POST: Menu/Show
         [HttpPost]
-        public TwiMLResult Show(string digits)
+        public ActionResult Show(string digits)
         {
             var selectedOption = digits;
             var optionActions = new Dictionary<string, Func<TwiMLResult>>()

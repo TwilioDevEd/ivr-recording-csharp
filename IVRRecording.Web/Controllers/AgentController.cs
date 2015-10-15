@@ -17,7 +17,7 @@ namespace IVRRecording.Web.Controllers
             _repository = repository;
         }
 
-        // GET: Recording
+        // GET: Agent
         public ActionResult Index()
         {
             var agents = _repository.All();
@@ -52,7 +52,7 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Agent/ScreenCall
         [HttpPost]
-        public TwiMLResult ScreenCall(string from)
+        public ActionResult ScreenCall(string from)
         {
             var response = new TwilioResponse();
             var incomingCallMessage = "You have an incoming call from: " +
@@ -69,7 +69,7 @@ namespace IVRRecording.Web.Controllers
         }
 
         // GET: Agent/ConnectMessage
-        public TwiMLResult ConnectMessage()
+        public ActionResult ConnectMessage()
         {
             return TwiML(new TwilioResponse()
                 .Say("Connecting you to the extraterrestrial in distress"));
@@ -77,7 +77,7 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Agent/Hangup
         [HttpPost]
-        public TwiMLResult Hangup()
+        public ActionResult Hangup()
         {
             var response = new TwilioResponse();
             response.Say("Thanks for your message. Goodbye",
