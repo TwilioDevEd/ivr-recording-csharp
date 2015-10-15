@@ -8,7 +8,7 @@ namespace IVRRecording.Web.Controllers
     {
         //POST: IVR/Welcome
         [HttpPost]
-        public TwiMLResult Welcome()
+        public ActionResult Welcome()
         {
             var response = new TwilioResponse();
             response.BeginGather(new {action = Url.Action("Show", "Menu"), numDigits = 1})
