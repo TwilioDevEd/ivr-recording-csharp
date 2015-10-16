@@ -3,7 +3,7 @@
 An example application implementing an automated phone line using
 Twilio and ASP.NET MVC.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/k75ntweqy18lomvi?svg=true)](https://ci.appveyor.com/project/acamino/ivr-recording-csharp)
+[![Build status](https://ci.appveyor.com/api/projects/status/w3s6prc1gqfmngaw?svg=true)](https://ci.appveyor.com/project/TwilioDevEd/ivr-recording-csharp)
 
 ## Run the application
 
