@@ -41,8 +41,7 @@ call. Depending on her input we will route this call to an extension. In
 this case an extension will be used to look up an Agent, so any string
 can be used to define an extension. </p>
 <p>Once we lookup the <code>Agent</code>, we can <code>&lt;Dial&gt;</code> the agent&#39;s phone number and try
-to connect the call. Let&#39;s dive in a little bit more into how we lookup
-the Agent.</p>
+to connect the call. Let&#39;s look at those steps next.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
@@ -63,34 +62,36 @@ Library</a></li>
 }
 </code></pre><p>We have a handle or <code>Extension</code> that we can use to lookup and Agent, and
 we have a <code>PhoneNumber</code> that we will call.</p>
-<p><em>Bear in mind that <code>FindByExtension</code> is just a wrapper for <code>FirstOrDefault</code>.</em></p>
+<p>Note that <code>FindByExtension</code> is just a wrapper for <code>FirstOrDefault</code>.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
 <li><a href="//msdn.microsoft.com/en-us/library/vstudio/bb918914.aspx">FirstOrDefault Method</a></li>
 </ul>
-</div><div data-file="IVRRecording.Web/Controllers/ExtensionController.cs" data-highlight="32-40" class="step"><h2 id="an-agent-screens-the-call">An agent screens the call</h2>
+</div><div data-file="IVRRecording.Web/Controllers/ExtensionController.cs" data-highlight="32-40" class="step"><h2 id="call-the-agent">Call the Agent</h2>
+<p>This code begins the process of transferring the call to our agent.</p>
 <p>By passing a <code>url</code> to the <code>Dial</code> &gt; <a href="//www.twilio.com/docs/api/twiml/number"><code>Number</code></a>
 TwiML tag, we are telling Twilio to make a POST request to the
 <code>Agent/Call</code> route <strong>after</strong> the agent has picked up but <strong>before</strong>
 connecting the two parties.</p>
 <p>Essentially we are telling Twilio to execute some TwiML that only the
-agent will hear. In this case the TwiML instructs the agent to press any
-number to accept the call. This is processed through the
-<a href="//www.twilio.com/docs/api/twiml/gather">Gather</a> callback.</p>
+agent will hear. Let&#39;s look at that next.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
 <li><a href="//www.twilio.com/docs/api/twiml/say">TwiML Say verb</a></li>
 </ul>
-</div><div data-file="IVRRecording.Web/Controllers/AgentController.cs" data-highlight="53-69" class="step"><h2 id="connect-the-caller-to-the-agent">Connect the Caller to the Agent</h2>
-<p>If the agent responds to the call screen by entering any digit the
-response will be processed by our <code>Agent/ConnectMessage</code> route which
-will <code>&lt;Say&gt;</code> a quick message, then continue with the original <code>&lt;Dial&gt;</code>
-command and connect the two parties.</p>
+</div><div data-file="IVRRecording.Web/Controllers/AgentController.cs" data-highlight="53-76" class="step"><h2 id="the-agent-screens-the-call">The Agent screens the call</h2>
+<p>When our agent picks up their phone, we use a
+<a href="https://www.twilio.com/docs/api/twiml/gather">Gather</a> verb to ask
+them if they want to accept the call.</p>
+<p>If the agent responds by entering any digit the
+response will be processed by our <code>Agent/ConnectMessage</code> route (below)
+which will <code>&lt;Say&gt;</code> a quick message, then continue with the original
+<code>&lt;Dial&gt;</code> command and connect the two parties.</p>
 <p>If the agent instead does not respond, the processing of the
-<code>&lt;Dial&gt;</code> verb will end and Twilio will continue processing the
-TwiML document.</p>
+caller&#39;s <code>&lt;Dial&gt;</code> verb will end and Twilio will look to the URL we
+provided for more instructions - we&#39;ll look at that route next.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
@@ -101,17 +102,16 @@ TwiML document.</p>
 <a href="//www.twilio.com/docs/api/twiml/dial#attributes-action-dial-call-status-values"><code>DialCallStatus</code></a>
 which will tell us if the call was successful. If it was &quot;completed&quot; we
 hangup — otherwise we need to <code>&lt;Say&gt;</code> a quick prompt and then
-<a href="//www.twilio.com/docs/api/twiml/record"><code>&lt;Record&gt;</code></a> a voicemail from
+<a href="//www.twilio.com/docs/api/twiml/record">Record</a> a voicemail from
 the caller. </p>
 <p>We also specify an <code>action</code> for <code>&lt;Record&gt;</code>. This route will be
 called after the call (and hence the recording) has finished. The route
-will response &quot;Goodbye&quot; and then <code>&lt;Hangup&gt;</code>.</p>
+will say &quot;Goodbye&quot; and then <a href="//www.twilio.com/docs/api/twiml/hangup">Hangup</a>.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
 <li><a href="//www.twilio.com/docs/api/twiml/twilio_request#synchronous-request-parameters">Twilio Request
 parameters</a></li>
-<li><a href="//www.twilio.com/docs/api/twiml/hangup">The TwiML Hangup verb</a></li>
 </ul>
 </div><div data-file="IVRRecording.Web/Controllers/RecordingController.cs" data-highlight="19-34" class="step"><h2 id="record-the-caller">Record the Caller</h2>
 <p>When we tell Twilio to Record we have a few
@@ -133,11 +133,11 @@ agent together with the voicemail.</p>
 </ul>
 </div><div data-file="IVRRecording.Web/Controllers/AgentController.cs" data-highlight="20-25" class="step"><h2 id="view-an-agent-s-voicemails">View an Agent&#39;s Voicemails</h2>
 <p>Once we look up the Agent, all we need to do is display all of her
-recordings. We simply bind the agents with its recordings to a view that
+recordings. We simply bind the agent with its recordings to a view that
 is then rendered.</p>
 <p>It is possible to look up recordings via the Twilio REST API,
-but since we have all of the data we need is in the
-<code>transcribeCallback</code> request we can easily store it ourselves
+but since we have all of the data we need in the
+<code>transcribeCallback</code> request, we can easily store it ourselves
 and save a roundtrip.</p>
 <hr>
 <p><strong>See Also:</strong></p>

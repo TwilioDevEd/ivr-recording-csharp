@@ -44,8 +44,7 @@
       can be used to define an extension. 
 
       Once we lookup the `Agent`, we can `<Dial>` the agent's phone number and try
-      to connect the call. Let's dive in a little bit more into how we lookup
-      the Agent.
+      to connect the call. Let's look at those steps next.
 
       ---
 
@@ -76,7 +75,7 @@
       We have a handle or `Extension` that we can use to lookup and Agent, and
       we have a `PhoneNumber` that we will call.
 
-      _Bear in mind that `FindByExtension` is just a wrapper for `FirstOrDefault`._
+      Note that `FindByExtension` is just a wrapper for `FirstOrDefault`.
 
       ---
 
@@ -85,7 +84,9 @@
 
   .step(data-file='IVRRecording.Web/Controllers/ExtensionController.cs', data-highlight='32-40')
     :markdown
-      ## An agent screens the call
+      ## Call the Agent
+
+      This code begins the process of transferring the call to our agent.
 
       By passing a `url` to the `Dial` > [`Number`](//www.twilio.com/docs/api/twiml/number)
       TwiML tag, we are telling Twilio to make a POST request to the
@@ -93,9 +94,7 @@
       connecting the two parties.
 
       Essentially we are telling Twilio to execute some TwiML that only the
-      agent will hear. In this case the TwiML instructs the agent to press any
-      number to accept the call. This is processed through the
-      [Gather](//www.twilio.com/docs/api/twiml/gather) callback.
+      agent will hear. Let's look at that next.
 
       ---
 
@@ -103,18 +102,22 @@
       * [TwiML Say verb](//www.twilio.com/docs/api/twiml/say)
 
   .step(data-file='IVRRecording.Web/Controllers/AgentController.cs',
-  data-highlight='53-69')
+  data-highlight='53-76')
     :markdown
-      ## Connect the Caller to the Agent
+      ## The Agent screens the call
 
-      If the agent responds to the call screen by entering any digit the
-      response will be processed by our `Agent/ConnectMessage` route which
-      will `<Say>` a quick message, then continue with the original `<Dial>`
-      command and connect the two parties.
+      When our agent picks up their phone, we use a
+      [Gather](https://www.twilio.com/docs/api/twiml/gather) verb to ask
+      them if they want to accept the call.
+
+      If the agent responds by entering any digit the
+      response will be processed by our `Agent/ConnectMessage` route (below)
+      which will `<Say>` a quick message, then continue with the original
+      `<Dial>` command and connect the two parties.
 
       If the agent instead does not respond, the processing of the
-      `<Dial>` verb will end and Twilio will continue processing the
-      TwiML document.
+      caller's `<Dial>` verb will end and Twilio will look to the URL we
+      provided for more instructions - we'll look at that route next.
 
       ---
 
@@ -130,19 +133,18 @@
       [`DialCallStatus`](//www.twilio.com/docs/api/twiml/dial#attributes-action-dial-call-status-values)
       which will tell us if the call was successful. If it was "completed" we
       hangup — otherwise we need to `<Say>` a quick prompt and then
-      [`<Record>`](//www.twilio.com/docs/api/twiml/record) a voicemail from
+      [Record](//www.twilio.com/docs/api/twiml/record) a voicemail from
       the caller. 
 
       We also specify an `action` for `<Record>`. This route will be
       called after the call (and hence the recording) has finished. The route
-      will response "Goodbye" and then `<Hangup>`.
+      will say "Goodbye" and then [Hangup](//www.twilio.com/docs/api/twiml/hangup).
 
       ---
 
       **See Also:**
       * [Twilio Request
         parameters](//www.twilio.com/docs/api/twiml/twilio_request#synchronous-request-parameters)
-      * [The TwiML Hangup verb](//www.twilio.com/docs/api/twiml/hangup)
 
   .step(data-file='IVRRecording.Web/Controllers/RecordingController.cs',
   data-highlight='19-34')
@@ -175,12 +177,12 @@
       ## View an Agent's Voicemails
 
       Once we look up the Agent, all we need to do is display all of her
-      recordings. We simply bind the agents with its recordings to a view that
+      recordings. We simply bind the agent with its recordings to a view that
       is then rendered.
 
       It is possible to look up recordings via the Twilio REST API,
-      but since we have all of the data we need is in the
-      `transcribeCallback` request we can easily store it ourselves
+      but since we have all of the data we need in the
+      `transcribeCallback` request, we can easily store it ourselves
       and save a roundtrip.
 
       ---
