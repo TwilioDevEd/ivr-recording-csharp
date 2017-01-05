@@ -3,11 +3,10 @@ using System.Web.Mvc;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
 using Twilio.TwiML;
-using Twilio.TwiML.Mvc;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class ExtensionController : TwilioController
+    public class ExtensionController : Controller
     {
         private readonly IAgentRepository _repository;
 
@@ -29,15 +28,16 @@ namespace IVRRecording.Web.Controllers
                 return RedirectToMenu();
             }
 
-            var response = new TwilioResponse();
+            var response = new VoiceResponse();
 
             response.Say("You'll be connected shortly to your planet.",
-                new { voice = "alice", language = "en-GB" });
+                voice: "alice", language: "en-GB" );
 
-            var number = new Number(agent.PhoneNumber, new { url = Url.Action("ScreenCall", "Agent")});
-            response.Dial(number, new {action = Url.Action("Call", "Agent", new {agentId = agent.Id})});
+            var dial = new Dial(action: Url.Action("Call", "Agent", new { agentId = agent.Id }));
+            dial.Number(agent.PhoneNumber, url: Url.Action("ScreenCall", "Agent"));
+            response.Dial(dial);
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
 
         private Agent FindAgentByExtension(string extension)
@@ -54,12 +54,12 @@ namespace IVRRecording.Web.Controllers
             return _repository.FindByExtension(agentExtension);
         }
 
-        private TwiMLResult RedirectToMenu()
+        private ActionResult RedirectToMenu()
         {
-            var response = new TwilioResponse();
+            var response = new VoiceResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
     }
 }

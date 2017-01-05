@@ -1,21 +1,20 @@
 ﻿using System.Web.Mvc;
 using Twilio.TwiML;
-using Twilio.TwiML.Mvc;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class IVRController : TwilioController
+    public class IVRController : Controller
     {
         //POST: IVR/Welcome
         [HttpPost]
         public ActionResult Welcome()
         {
-            var response = new TwilioResponse();
-            response.BeginGather(new {action = Url.Action("Show", "Menu"), numDigits = 1})
-                .Play("http://howtodocs.s3.amazonaws.com/et-phone.mp3", new { loop = 3 })
-                .EndGather();
+            var response = new VoiceResponse();
+            var gather = new Gather(action: Url.Action("Show", "Menu"), numDigits: 1);
+            gather.Play("http://howtodocs.s3.amazonaws.com/et-phone.mp3", loop: 3);
+            response.Gather(gather);
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
     }
 }

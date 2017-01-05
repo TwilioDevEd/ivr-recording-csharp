@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Twilio.TwiML;
-using Twilio.TwiML.Mvc;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class MenuController : TwilioController
+    public class MenuController : Controller
     {
         // POST: Menu/Show
         [HttpPost]
         public ActionResult Show(string digits)
         {
             var selectedOption = digits;
-            var optionActions = new Dictionary<string, Func<TwiMLResult>>()
+            var optionActions = new Dictionary<string, Func<ActionResult>>()
             {
                 {"1", ReturnInstructions},
                 {"2", Planets}
@@ -24,42 +23,43 @@ namespace IVRRecording.Web.Controllers
                 RedirectWelcome();
         }
 
-        private TwiMLResult ReturnInstructions()
+        private ActionResult ReturnInstructions()
         {
-            var response = new TwilioResponse();
+            var response = new VoiceResponse();
             response.Say("To get to your extraction point, get on your bike and go down " +
                          "the street. Then Left down an alley. Avoid the police cars. Turn left " +
                          "into an unfinished housing development. Fly over the roadblock. Go " +
                          "passed the moon. Soon after you will see your mother ship.",
-                         new {voice = "alice", language = "en-GB"});
+                         voice: "alice", language: "en-GB");
 
             response.Say("Thank you for calling the ET Phone Home Service - the " +
                          "adventurous alien's first choice in intergalactic travel");
 
             response.Hangup();
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
 
-        private TwiMLResult Planets()
+        private ActionResult Planets()
         {
-            var response = new TwilioResponse();
-            response.BeginGather(new {action = "/Extension/Connect", numDigits = "1"})
-                .Say("To call the planet Broh doe As O G, press 2. To call the planet " +
+            var response = new VoiceResponse();
+
+            var gather = new Gather(action: "/Extension/Connect", numDigits: 1);
+            gather.Say("To call the planet Broh doe As O G, press 2. To call the planet " +
                      "DuhGo bah, press 3. To call an oober asteroid to your location, press 4. To " +
                      "go back to the main menu, press the star key ",
-                     new {voice = "alice", language = "en-GB", loop = "3"})
-                .EndGather();
+                     voice: "alice", language: "en-GB", loop: 3);
+            response.Gather(gather);
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
 
-        private TwiMLResult RedirectWelcome()
+        private ActionResult RedirectWelcome()
         {
-            var response = new TwilioResponse();
+            var response = new VoiceResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return TwiML(response);
+            return Content(response.ToString(), "application/xml");
         }
     }
 }
