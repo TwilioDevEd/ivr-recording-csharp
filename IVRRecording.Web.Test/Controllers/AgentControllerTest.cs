@@ -4,11 +4,14 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Xml.XPath;
 using IVRRecording.Web.Controllers;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
+using IVRRecording.Web.Test.Extensions;
 using Moq;
 using NUnit.Framework;
+using TestStack.FluentMVCTesting;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -56,11 +59,11 @@ namespace IVRRecording.Web.Test.Controllers
         public void GivenACallAction_WhenStatusIsCompleted_ThenResponseWillBeEmpty()
         {
             var controller = new AgentController();
-            var result = controller.Call("1", "completed");
-
-            result.ExecuteResult(MockControllerContext.Object);
-
-            Assert.That(Result.ToString(), Is.Empty);
+            controller.WithCallTo(c => c.Call("1", "completed"))
+                .ShouldReturnTwiMLResult(r =>
+                {
+                    Assert.That(r.XPathSelectElement("Root").Value.Trim(), Is.Empty);
+                });
         }
 
         [Test]

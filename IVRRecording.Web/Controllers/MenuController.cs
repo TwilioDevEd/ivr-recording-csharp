@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class MenuController : Controller
+    public class MenuController : TwilioController
     {
         // POST: Menu/Show
         [HttpPost]
@@ -23,7 +24,7 @@ namespace IVRRecording.Web.Controllers
                 RedirectWelcome();
         }
 
-        private ActionResult ReturnInstructions()
+        private TwiMLResult ReturnInstructions()
         {
             var response = new VoiceResponse();
             response.Say("To get to your extraction point, get on your bike and go down " +
@@ -37,10 +38,10 @@ namespace IVRRecording.Web.Controllers
 
             response.Hangup();
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
-        private ActionResult Planets()
+        private TwiMLResult Planets()
         {
             var response = new VoiceResponse();
 
@@ -51,15 +52,15 @@ namespace IVRRecording.Web.Controllers
                      voice: "alice", language: "en-GB", loop: 3);
             response.Gather(gather);
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
-        private ActionResult RedirectWelcome()
+        private TwiMLResult RedirectWelcome()
         {
             var response = new VoiceResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
     }
 }

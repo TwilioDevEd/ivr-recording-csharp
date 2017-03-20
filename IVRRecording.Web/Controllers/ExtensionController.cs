@@ -2,11 +2,12 @@
 using System.Web.Mvc;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
+using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class ExtensionController : Controller
+    public class ExtensionController : TwilioController
     {
         private readonly IAgentRepository _repository;
 
@@ -19,7 +20,7 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Extension/Connect
         [HttpPost]
-        public ActionResult Connect(string digits)
+        public TwiMLResult Connect(string digits)
         {
             var extension = digits;
             var agent = FindAgentByExtension(extension);
@@ -37,7 +38,7 @@ namespace IVRRecording.Web.Controllers
             dial.Number(agent.PhoneNumber, url: Url.Action("ScreenCall", "Agent"));
             response.Dial(dial);
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
         private Agent FindAgentByExtension(string extension)
@@ -54,12 +55,12 @@ namespace IVRRecording.Web.Controllers
             return _repository.FindByExtension(agentExtension);
         }
 
-        private ActionResult RedirectToMenu()
+        private TwiMLResult RedirectToMenu()
         {
             var response = new VoiceResponse();
             response.Redirect(Url.Action("Welcome", "IVR"));
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
     }
 }
