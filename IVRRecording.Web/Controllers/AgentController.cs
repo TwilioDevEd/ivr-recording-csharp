@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Web.Mvc;
 using IVRRecording.Web.Models.Repository;
+using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
+using System.Xml.Linq;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class AgentController : Controller
+    public class AgentController : TwilioController
     {
         private readonly IAgentRepository _repository;
 
@@ -25,9 +27,13 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Agent/Call
         [HttpPost]
-        public ActionResult Call(string agentId, string dialCallStatus)
+        public TwiMLResult Call(string agentId, string dialCallStatus)
         {
-            if (dialCallStatus == "completed") return Content(String.Empty);
+            if (dialCallStatus == "completed")
+            {
+                var emptyResponse = new XDocument(new XElement("Root", ""));
+                return new TwiMLResult(emptyResponse);
+            }
 
             var response = new VoiceResponse();
             response.Say(
@@ -52,12 +58,12 @@ namespace IVRRecording.Web.Controllers
 
             response.Hangup();
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
         // POST: Agent/ScreenCall
         [HttpPost]
-        public ActionResult ScreenCall(string from)
+        public TwiMLResult ScreenCall(string from)
         {
             var response = new VoiceResponse();
 
@@ -74,20 +80,20 @@ namespace IVRRecording.Web.Controllers
             response.Say("Sorry. Did not get your response");
             response.Hangup();
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
         // GET: Agent/ConnectMessage
-        public ActionResult ConnectMessage()
+        public TwiMLResult ConnectMessage()
         {
             var response = new VoiceResponse()
                 .Say("Connecting you to the extraterrestrial in distress");
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
         // POST: Agent/Hangup
         [HttpPost]
-        public ActionResult Hangup()
+        public TwiMLResult Hangup()
         {
             var response = new VoiceResponse();
             response.Say(
@@ -97,7 +103,7 @@ namespace IVRRecording.Web.Controllers
             );
             response.Hangup();
 
-            return Content(response.ToString(), "application/xml");
+            return TwiML(response);
         }
 
         private static string SpelledPhoneNumber(string phoneNumber)

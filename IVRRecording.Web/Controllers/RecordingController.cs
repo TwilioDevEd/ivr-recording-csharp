@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
+using Twilio.AspNet.Mvc;
 
 namespace IVRRecording.Web.Controllers
 {
-    public class RecordingController : Controller
+    public class RecordingController : TwilioController
     {
         private readonly IRecordingRepository _repository;
 
@@ -18,7 +20,7 @@ namespace IVRRecording.Web.Controllers
 
         // POST: Recording/Create
         [HttpPost]
-        public ActionResult Create(string agentId, string caller, string transcriptionText, string recordingUrl)
+        public TwiMLResult Create(string agentId, string caller, string transcriptionText, string recordingUrl)
         {
 
             _repository.Create(
@@ -30,7 +32,9 @@ namespace IVRRecording.Web.Controllers
                     Url = recordingUrl
                 });
 
-            return Content("Recording saved");
+            var response = new XDocument(new XElement("Root", "Recording saved"));
+
+            return new TwiMLResult(response);
         }
     }
 }
