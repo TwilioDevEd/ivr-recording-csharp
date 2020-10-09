@@ -20,16 +20,18 @@ Twilio and ASP.NET MVC.
 
 2. Build the solution.
 
-3. Run `Update-Database` at [Package Manager
+3. Modify C:\Users\Sam[...] path in `Web.config` to a valid path for `<add name="DefaultConnection" connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=YOUR_PATH_HERE` the file will be created in the next step.
+
+4. Run `Update-Database` at [Package Manager
    Console](https://docs.nuget.org/consume/package-manager-console) to execute the migrations.
 
-4. Expose the application to the wider Internet using [ngrok](https://ngrok.com/)
+5. Expose the application to the wider Internet using [ngrok](https://ngrok.com/)
 
    ```
    ngrok http 1078 -host-header="localhost:1078"
    ```
 
-5. Provision a number under the
+6. Provision a number under the
    [Manage Numbers page](https://www.twilio.com/user/account/phone-numbers/incoming)
    on your account. Set the voice URL for the number to
    `http://<your-ngrok-subdomain>.ngrok.io/ivr/welcome`.
