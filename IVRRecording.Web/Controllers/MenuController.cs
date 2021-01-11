@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
+using Twilio.TwiML.Voice;
 
 namespace IVRRecording.Web.Controllers
 {
@@ -45,12 +46,12 @@ namespace IVRRecording.Web.Controllers
         {
             var response = new VoiceResponse();
 
-            var gather = new Gather(action: "/Extension/Connect", numDigits: 1);
+            var gather = new Gather(action: new Uri("/Extension/Connect", UriKind.Relative), numDigits: 1);
             gather.Say("To call the planet Broh doe As O G, press 2. To call the planet " +
                      "DuhGo bah, press 3. To call an oober asteroid to your location, press 4. To " +
                      "go back to the main menu, press the star key ",
                      voice: "alice", language: "en-GB", loop: 3);
-            response.Gather(gather);
+            response.Append(gather);
 
             return TwiML(response);
         }
@@ -58,7 +59,7 @@ namespace IVRRecording.Web.Controllers
         private TwiMLResult RedirectWelcome()
         {
             var response = new VoiceResponse();
-            response.Redirect(Url.Action("Welcome", "IVR"));
+            response.Redirect(new Uri(Url.Action("Welcome", "IVR"), UriKind.Relative));
 
             return TwiML(response);
         }
