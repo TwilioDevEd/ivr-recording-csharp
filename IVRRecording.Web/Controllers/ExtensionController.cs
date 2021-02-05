@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using IVRRecording.Web.Models;
 using IVRRecording.Web.Models.Repository;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
+using Twilio.TwiML.Voice;
 
 namespace IVRRecording.Web.Controllers
 {
@@ -34,9 +36,9 @@ namespace IVRRecording.Web.Controllers
             response.Say("You'll be connected shortly to your planet.",
                 voice: "alice", language: "en-GB" );
 
-            var dial = new Dial(action: Url.Action("Call", "Agent", new { agentId = agent.Id }));
-            dial.Number(agent.PhoneNumber, url: Url.Action("ScreenCall", "Agent"));
-            response.Dial(dial);
+            var dial = new Dial(action: new Uri(Url.Action("Call", "Agent", new { agentId = agent.Id }), UriKind.Relative));
+            dial.Number(agent.PhoneNumber, url: new Uri(Url.Action("ScreenCall", "Agent"), UriKind.Relative));
+            response.Append(dial);
 
             return TwiML(response);
         }
@@ -58,7 +60,7 @@ namespace IVRRecording.Web.Controllers
         private TwiMLResult RedirectToMenu()
         {
             var response = new VoiceResponse();
-            response.Redirect(Url.Action("Welcome", "IVR"));
+            response.Redirect(new Uri(Url.Action("Welcome", "IVR"), UriKind.Relative));
 
             return TwiML(response);
         }

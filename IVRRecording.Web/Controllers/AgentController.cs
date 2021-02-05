@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using IVRRecording.Web.Models.Repository;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
+using Twilio.TwiML.Voice;
 using System.Xml.Linq;
 
 namespace IVRRecording.Web.Controllers
@@ -37,8 +38,7 @@ namespace IVRRecording.Web.Controllers
 
             var response = new VoiceResponse();
             response.Say(
-                body: "It appears that no agent is available. " +
-                         "Please leave a message after the beep",
+                "It appears that no agent is available. Please leave a message after the beep",
                 language: "en-GB",
                 voice: "alice"
             );
@@ -46,12 +46,12 @@ namespace IVRRecording.Web.Controllers
             response.Record(
                 maxLength: 20,
                 playBeep: true,
-                action: Url.Action("Hangup"),
-                transcribeCallback: Url.Action("Create", "Recording", new {agentId})
+                action: new Uri(Url.Action("Hangup"), UriKind.Relative),
+                transcribeCallback: new Uri(Url.Action("Create", "Recording", new {agentId}), UriKind.Relative)
             );
 
             response.Say(
-                body: "No record received. Goodbye",
+                "No record received. Goodbye",
                 language: "en-GB",
                 voice: "alice"
             );
@@ -71,11 +71,11 @@ namespace IVRRecording.Web.Controllers
                                       SpelledPhoneNumber(from);
             var gather = new Gather(
                 numDigits: 1,
-                action: Url.Action("ConnectMessage")
+                action: new Uri(Url.Action("ConnectMessage"), UriKind.Relative)
             );
             gather.Say(incomingCallMessage)
                   .Say("Press any key to accept");
-            response.Gather(gather);
+            response.Append(gather);
 
             response.Say("Sorry. Did not get your response");
             response.Hangup();
@@ -97,7 +97,7 @@ namespace IVRRecording.Web.Controllers
         {
             var response = new VoiceResponse();
             response.Say(
-                body: "Thanks for your message. Goodbye",
+                "Thanks for your message. Goodbye",
                 language: "en-GB",
                 voice: "alice"
             );
