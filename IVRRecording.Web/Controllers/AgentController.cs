@@ -40,7 +40,7 @@ namespace IVRRecording.Web.Controllers
             response.Say(
                 "It appears that no agent is available. Please leave a message after the beep",
                 language: "en-GB",
-                voice: "alice"
+                voice: Say.VoiceEnum.PollyAmy
             );
 
             response.Record(
@@ -53,7 +53,7 @@ namespace IVRRecording.Web.Controllers
             response.Say(
                 "No record received. Goodbye",
                 language: "en-GB",
-                voice: "alice"
+                voice: Say.VoiceEnum.PollyAmy
             );
 
             response.Hangup();
@@ -99,7 +99,7 @@ namespace IVRRecording.Web.Controllers
             response.Say(
                 "Thanks for your message. Goodbye",
                 language: "en-GB",
-                voice: "alice"
+                voice: Say.VoiceEnum.PollyAmy
             );
             response.Hangup();
 

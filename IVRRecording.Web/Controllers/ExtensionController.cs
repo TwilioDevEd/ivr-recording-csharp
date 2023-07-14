@@ -34,7 +34,7 @@ namespace IVRRecording.Web.Controllers
             var response = new VoiceResponse();
 
             response.Say("You'll be connected shortly to your planet.",
-                voice: "alice", language: "en-GB" );
+                voice: Say.VoiceEnum.PollyAmy, language: "en-GB" );
 
             var dial = new Dial(action: new Uri(Url.Action("Call", "Agent", new { agentId = agent.Id }), UriKind.Relative));
             dial.Number(agent.PhoneNumber, url: new Uri(Url.Action("ScreenCall", "Agent"), UriKind.Relative));
